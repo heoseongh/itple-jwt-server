@@ -18,6 +18,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+
     private final TokenProvider tokenProvider;
 
     /**
@@ -42,8 +44,12 @@ public class JwtFilter extends GenericFilterBean {
         if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName());
+        } else {
+            log.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
         }
+
+        chain.doFilter(request, response);
     }
 
 
@@ -53,7 +59,7 @@ public class JwtFilter extends GenericFilterBean {
      * @return JWT Token
      */
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         // 토큰이 공백, null, empty 가 아닌 문자열이고 Bearer로 시작하는지 확인하고
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
             // 앞에 "Bearer" 이후의 순수한 토큰만 잘라서 리턴한다.
