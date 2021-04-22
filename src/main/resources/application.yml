@@ -22,3 +22,8 @@ spring:
 logging:
   level:
     me.silvernine: DEBUG
+
+jwt:
+  header: Authoriaztion
+  secret: aGVvc2VvbmdoeWVvbnNlb25naHllb25oZW9zZW9uZ2h5ZW9oZW9zZW9uZ2h5ZW9uc2VvbmdoeWVvbmhlb3Nlb25naHllbwo
+  token-validity-in-seconds: 86400
