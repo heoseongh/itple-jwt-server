@@ -23,9 +23,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TokenProvider implements InitializingBean {
 
-//  @Slf4j 로 대체
-//  private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-
     private static final String AUTHORITIES_KEY = "auth";
 
     private final String secret;
@@ -34,8 +31,9 @@ public class TokenProvider implements InitializingBean {
     private Key key;
 
     /**
-     * 생성자
-     * application.yml 파일에서 secret 키와 토큰 유효 시간을 가져와서 셋팅해준다.
+     * application.yml 파일에서 받은 secret 키와 토큰 유효 시간을 셋팅해준다.
+     * @param secret
+     * @param tokenValidityInSeconds
      */
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
@@ -51,6 +49,8 @@ public class TokenProvider implements InitializingBean {
 
     /**
      * 토큰 만들기
+     * @param authentication
+     * @return JWT 토큰
      */
     public String createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
@@ -63,13 +63,16 @@ public class TokenProvider implements InitializingBean {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .signWith(key, SignatureAlgorithm.ES512)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
     }
 
+
     /**
-     * 토큰 파싱해서 인증 객체(Authentication) 얻기
+     * 토큰 파싱해서 Authentication 얻기
+     * @param token
+     * @return 인증 객체(Authentication)
      */
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
