@@ -11,12 +11,12 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class Account {
 
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long accountId;
 
     @Column(length = 50, unique = true)
     private String username;
@@ -33,8 +33,8 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "user_authority",
-            joinColumns = @JoinColumn(name = "user_id"),
+            name = "account_authority",
+            joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_name"))
     private Set<Authority> authorities;
 }
