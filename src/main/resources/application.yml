@@ -21,7 +21,8 @@ spring:
 
 logging:
   level:
-    me.silvernine: DEBUG
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
 
 jwt:
   header: Authoriaztion
