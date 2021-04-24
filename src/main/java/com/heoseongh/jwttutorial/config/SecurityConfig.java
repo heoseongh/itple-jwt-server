@@ -57,6 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/hello").permitAll()
                 .antMatchers("/api/authenticate").permitAll()
                 .antMatchers("/api/signup").permitAll()
+                // 유저 정보 조회는 ADMIN 권한만 허용한다.
+                .antMatchers("/api/user/{username}").hasRole("ADMIN")
                 .anyRequest().authenticated()
 
                 // JwtSecurityConfig 클래스 적용
